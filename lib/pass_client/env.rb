@@ -2,7 +2,7 @@ module PassClient
   class Env
 
     def self.env
-      @api_client_env ||= self.determine_env
+      self.determine_env
     end
 
     def self.logger

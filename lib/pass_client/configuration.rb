@@ -1,3 +1,5 @@
+require 'pass_client/env'
+
 module PassClient
   class Configuration
     attr_accessor :hostname, :port, :timeout, :open_timeout, :auth_id, :secret_key
@@ -7,12 +9,11 @@ module PassClient
       @open_timeout = 500
       @auth_id = "auth_id"
       @secret_key = "secret_key"
-      @port = 443
 
-      case ENV['RAILS_ENV']
-      when "staging"
+      case PassClient::Env.env
+      when :staging
         @hostname = "http://data-staging.ncsasports.org"
-      when "production"
+      when :production
         @hostname = "http://data.ncsasports.org"
       else
         @hostname = "http://localhost"

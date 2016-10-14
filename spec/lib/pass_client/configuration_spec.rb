@@ -8,7 +8,7 @@ RSpec.describe PassClient::Configuration do
     expect(subject.hostname).to eq "http://localhost"
     expect(subject.timeout).to eq 1000
     expect(subject.open_timeout).to eq 500
-    expect(subject.port).to eq 443
+    expect(subject.port).to be_nil
   end
 
   it 'sets the hostname based on environment' do
