@@ -1,6 +1,5 @@
 require 'pass_client/connection'
 require 'pass_client/athlete_shared'
-require 'JSON'
 
 module PassClient
   class AthleteGetter

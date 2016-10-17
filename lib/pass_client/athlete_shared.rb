@@ -1,3 +1,5 @@
+require 'json'
+
 module PassClient
   module Athlete
     RequestError = Class.new(StandardError)
