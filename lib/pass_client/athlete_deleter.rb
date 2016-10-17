@@ -1,0 +1,24 @@
+require 'pass_client/connection'
+require 'pass_client/athlete_shared'
+require 'JSON'
+
+module PassClient
+  class AthleteDeleter
+    include Athlete
+
+    attr_reader :id
+
+    def initialize(id:)
+      @id = id
+    end
+
+    def delete!
+      response = connection.delete("/api/partner_athlete_search/v1/athlete/#{id}")
+      if response.status.between?(200, 299)
+        response
+      else
+        error_handler(response, __method__)
+      end
+    end
+  end
+end
