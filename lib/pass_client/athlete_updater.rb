@@ -5,15 +5,15 @@ module PassClient
   class AthleteUpdater
     include Athlete
 
-    attr_reader :id, :update_body
+    attr_reader :id, :body
 
-    def initialize(id:, update_body:)
+    def initialize(id:, body:)
       @id = id
-      @update_body = update_body
+      @body = body
     end
 
     def update!
-      response = connection.put("/api/partner_athlete_search/v1/athlete/#{id}", {athlete: convert_body}, auth_header)
+      response = connection.put("/api/partner_athlete_search/v1/athlete/#{id}", request_body, auth_header)
       if response.status.between?(200, 299)
         response
       else

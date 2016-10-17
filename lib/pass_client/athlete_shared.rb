@@ -1,4 +1,3 @@
-require 'json'
 require 'pass_client/token_manager'
 
 module PassClient
@@ -11,8 +10,8 @@ module PassClient
       Connection.unsigned_instance
     end
 
-    def convert_body
-      update_body.kind_of?(Hash) ? update_body.to_json : update_body
+    def request_body
+      { athlete: body }.to_json
     end
 
     def error_handler(response, method=nil)
@@ -24,7 +23,7 @@ module PassClient
     end
 
     def auth_header
-      { authorization: token }
+      { authorization: token }#.to_json
     end
   end
 end

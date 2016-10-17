@@ -5,14 +5,14 @@ module PassClient
   class AthleteCreator
     include Athlete
 
-    attr_reader :update_body
+    attr_reader :body
 
-    def initialize(update_body:)
-      @update_body = update_body
+    def initialize(body:)
+      @body = body
     end
 
     def create!
-      response = connection.post("/api/partner_athlete_search/v1/athlete/", {athlete: convert_body}, auth_header)
+      response = connection.post("/api/partner_athlete_search/v1/athlete/", request_body, auth_header)
       if response.status.between?(200, 299)
         response
       else

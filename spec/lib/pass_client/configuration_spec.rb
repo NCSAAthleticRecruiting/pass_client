@@ -1,6 +1,9 @@
 require 'pass_client/configuration'
 RSpec.describe PassClient::Configuration do
   subject { described_class.new }
+  before do
+    ENV['PASS_CLIENT_ENV'] = nil
+  end
 
   it 'attr_readers get set to default values' do
     expect(subject.auth_id).to eq "auth_id"

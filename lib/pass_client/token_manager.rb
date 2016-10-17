@@ -7,14 +7,14 @@ module PassClient
 
     def token!
       return config.token unless config.token == ""
-      response = connection.post("/api/partner_athlete_search/v1/issue_token/", {auth_id: config.auth_id})
+      response = connection.post("/api/partner_athlete_search/v1/issue_token/", {auth_id: config.auth_id}.to_json)
       renew! if response.status == 401
       set_token(response.body)
     end
 
     def renew!
       config.token = ""
-      response = connection.post("/api/partner_athlete_search/v1/issue_token/", {auth_id: config.auth_id})
+      response = connection.post("/api/partner_athlete_search/v1/issue_token/", {auth_id: config.auth_id}.to_json)
       error_handler(response, __method__) if response.status == 401
       set_token(response.body)
     end

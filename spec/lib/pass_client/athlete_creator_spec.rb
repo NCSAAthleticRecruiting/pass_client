@@ -1,10 +1,12 @@
 require 'pass_client/athlete_creator'
 
 RSpec.describe PassClient::AthleteCreator do
-  subject { described_class.new(update_body: update_body) }
+  subject { described_class.new(body: update_body) }
   let(:connection_double) { instance_double(PassClient::Connection) }
   let(:id) { "123-abc-456" }
-  let(:update_body) { "{\"email\":\"test@school.edu\",\"sport_id\":101}" }
+  let(:update_body) { { email:"test@school.edu",sport_id:101} }
+
+  # let(:update_body) { "{\"email\":\"test@school.edu\",\"sport_id\":101}" }
   let(:api_response) { Faraday::Response.new(status: 200, body: "") }
   let(:method) { :post }
   let(:token) { "atoken" }
@@ -20,18 +22,18 @@ RSpec.describe PassClient::AthleteCreator do
   end
 
   it 'sends a request to the correct address and accept a hash for update_body' do
-    subject = described_class.new(update_body: { email: "test@school.edu", sport_id: 101 })
+    subject = described_class.new(body: { email: "test@school.edu", sport_id: 101 })
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete/", {athlete: update_body}, anything)
+      .to receive(method).with("/api/partner_athlete_search/v1/athlete/", {athlete: update_body}.to_json, anything)
 
     subject.create!
   end
 
   it 'sets the authorization header' do
     expect(::PassClient.configuration.token).to eq "atoken"
-    subject = described_class.new(update_body: { email: "test@school.edu", sport_id: 101 })
+    subject = described_class.new(body: { email: "test@school.edu", sport_id: 101 })
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete/", {athlete: update_body}, {authorization: token})
+      .to receive(method).with("/api/partner_athlete_search/v1/athlete/", {athlete: update_body}.to_json, {authorization: token}.to_json)
 
     subject.create!
   end
