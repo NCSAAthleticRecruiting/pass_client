@@ -32,7 +32,7 @@ module PassClient
     private
 
     def self.connection
-      Connection.instance
+      Connection.unsigned_instance
     end
   end
 end

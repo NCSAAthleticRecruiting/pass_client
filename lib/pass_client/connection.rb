@@ -9,11 +9,19 @@ module PassClient
   class Connection
     extend Forwardable
 
-    attr_reader :hostname, :open_timeout, :timeout, :auth_id, :secret_key, :port, :sign_with
+    attr_reader :hostname, :open_timeout, :timeout, :auth_id, :secret_key, :port, :sign_with, :signed
 
     def self.instance
       if @test_instance.nil?
         self.new(PassClient::Env.env)
+      else
+        @test_instance
+      end
+    end
+
+    def self.unsigned_instance
+      if @test_instance.nil?
+        self.new(PassClient::Env.env, signed: false)
       else
         @test_instance
       end
@@ -27,7 +35,7 @@ module PassClient
       @test_instance = nil
     end
 
-    def initialize(env, rack_app: nil)
+    def initialize(env, rack_app: nil, signed: true)
       config = ::PassClient.configuration
 
       @hostname = config.hostname
@@ -37,6 +45,7 @@ module PassClient
       @secret_key  = config.secret_key
       @port = config.port
       @sign_with = config.sign_with
+      @signed = signed
 
       # This allows stubbing out the server rack application
       # to allow testing for end to end testing of authentication
@@ -49,8 +58,9 @@ module PassClient
     def connection
       @connection ||= Faraday.new(base_uri, ssl: {verify: false}) do |c|
         c.response :logger unless PassClient::Env.env == :test
-
-        c.use :hmac, auth_id, secret_key, sign_with: sign_with
+        if signed
+          c.use :hmac, auth_id, secret_key, sign_with: sign_with
+        end
         # In the test env we short circuit the HTTP request and allow for a rack application
         # to be given upon creation of the connection.  This allows for end to end testing
         # of the client.

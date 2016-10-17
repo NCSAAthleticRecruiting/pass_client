@@ -7,7 +7,7 @@ module PassClient
     private
 
     def connection
-      Connection.instance
+      Connection.unsigned_instance
     end
 
     def convert_body
@@ -17,6 +17,5 @@ module PassClient
     def error_handler(response, method=nil)
       raise RequestError, "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}"
     end
-
   end
 end

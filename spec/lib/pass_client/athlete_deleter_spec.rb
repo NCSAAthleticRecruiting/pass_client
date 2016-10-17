@@ -9,7 +9,7 @@ RSpec.describe PassClient::AthleteDeleter do
 
   before do
     allow(PassClient::Connection)
-      .to receive(:instance)
+      .to receive(:unsigned_instance)
       .and_return(connection_double)
     allow(connection_double)
       .to receive(method)

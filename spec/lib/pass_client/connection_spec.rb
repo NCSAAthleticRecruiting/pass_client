@@ -1,7 +1,6 @@
 require 'pass_client/connection'
 require 'pass_client/configuration'
-# require 'rack/test'
-# require 'ostruct'
+require 'ostruct'
 
 RSpec.describe PassClient::Connection do
   let(:config_data) { PassClient.configuration }
@@ -58,6 +57,20 @@ RSpec.describe PassClient::Connection do
         expect(faraday_fake)
           .to have_received(:use)
           .with(:hmac, config_data.auth_id, config_data.secret_key, sign_with: :sha256)
+      end
+
+      it 'optionally uses HMAC to sign the requst' do
+        subject = described_class.new(:test, signed: false)
+        subject.connection
+
+        expect(faraday_fake).to_not have_received(:use)
+      end
+
+      describe "#unsigned_instance" do
+        it 'does not sign the connection' do
+          described_class.unsigned_instance
+          expect(faraday_fake).to_not have_received(:use)
+        end
       end
     end
   end
