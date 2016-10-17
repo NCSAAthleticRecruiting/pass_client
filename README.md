@@ -1,8 +1,8 @@
 # PassClient
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/pass_client`. To experiment with that code, run `bin/console` for an interactive prompt.
+The PassClient gem handles connections with the Partner Athlete Search Service (PASS). Using the athlete_... classes, you can perform CRUD operations on athletes within the PASS.
 
-TODO: Delete this and the text above, and describe your gem
+The gem can be configured with an initializer in your Rails project. (See Configuration)
 
 ## Installation
 
@@ -22,15 +22,15 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Create, update, and delete methods are available from the AthleteCreator, AthleteUpdater, and AthleteDeleter classes, respectively. Each class has a corresponding (!) bang method, e.g. create!, etc. The AthleteGetter class has :get available, without a (!).
 
-## Development
+## Configuration
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+This gem must be configured with your auth_id and secret_key to work properly. Create an initializer in your rails project and set the appropriate values on the PassClient.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/pass_client. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
+```ruby
+PassClient.configure do |config|
+  config.auth_id = "test_auth_id"
+  config.secret_key = "test_secret_key"
+end
+```

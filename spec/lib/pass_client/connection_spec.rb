@@ -1,7 +1,7 @@
 require 'pass_client/connection'
 require 'pass_client/configuration'
-require 'rack/test'
-require 'ostruct'
+# require 'rack/test'
+# require 'ostruct'
 
 RSpec.describe PassClient::Connection do
   let(:config_data) { PassClient.configuration }
@@ -17,9 +17,10 @@ RSpec.describe PassClient::Connection do
       expect(subject.timeout).to eq(config_data.timeout)
       expect(subject.auth_id).to eq(config_data.auth_id)
       expect(subject.secret_key).to eq(config_data.secret_key)
+      expect(subject.sign_with).to eq(config_data.sign_with)
     end
 
-    it 'takes an optional initialization hash' do
+    it 'uses the PassClient configurations' do
       PassClient.configure do |config|
         config.hostname = "http://localtest"
         config.timeout = 2222
@@ -61,12 +62,12 @@ RSpec.describe PassClient::Connection do
     end
   end
 
-  describe 'HMAC signing of requests' do
+  describe 'SHA256 HMAC signing of requests' do
     let(:stub_app) do
       ->(env) do
         authenticated = Ey::Hmac.authenticated?(
           env,
-          accept_digests: [:sha256, :sha512],
+          accept_digests: [@sign_with],
           adapter: Ey::Hmac::Adapter::Rack
         ) { |auth_id| (auth_id == @auth_id) && @secret_key}
 
@@ -81,6 +82,7 @@ RSpec.describe PassClient::Connection do
     it 'configures signing of successful requests' do
       @auth_id = subject.auth_id
       @secret_key = subject.secret_key
+      @sign_with = subject.sign_with
 
       expect(subject.get("/resources").status).to eq(200)
     end
@@ -88,17 +90,70 @@ RSpec.describe PassClient::Connection do
     it 'fails when request is not signed with the correct auth_id' do
       @auth_id = 'its_bogus'
       @secret_key = subject.secret_key
+      @sign_with = subject.sign_with
 
       expect { subject.get("/resources") }.to raise_error(PassClient::ResponseError)
     end
 
     it 'fails when request is not signed with the correct secret_key' do
       @auth_id = subject.auth_id
-      @secret_key = 'it_bogus'
+      @secret_key = 'its_bogus'
+      @sign_with = subject.sign_with
 
       expect { subject.get("/resources") }.to raise_error(PassClient::ResponseError)
     end
   end
+
+  describe 'SHA512 HMAC signing of requests' do
+    before do
+      PassClient.configure do |config|
+        config.sign_with = :sha512
+      end
+    end
+
+    let(:stub_app) do
+      ->(env) do
+        authenticated = Ey::Hmac.authenticated?(
+          env,
+          accept_digests: [@sign_with],
+          adapter: Ey::Hmac::Adapter::Rack
+        ) { |auth_id| (auth_id == @auth_id) && @secret_key}
+
+        [(authenticated ? 200 : 401), {"Content-Type" => "text/plain"}, []]
+      end
+    end
+
+    subject do
+      described_class.new(:test, rack_app: stub_app)
+    end
+
+    it 'configures signing of successful requests' do
+      @auth_id = subject.auth_id
+      @secret_key = subject.secret_key
+      @sign_with = subject.sign_with
+
+      expect(subject.sign_with).to eq :sha512
+      expect(subject.sign_with).to eq @sign_with
+      expect(subject.get("/resources").status).to eq(200)
+    end
+
+    it 'fails when request is not signed with the correct auth_id' do
+      @auth_id = 'its_bogus'
+      @secret_key = subject.secret_key
+      @sign_with = subject.sign_with
+
+      expect { subject.get("/resources") }.to raise_error(PassClient::ResponseError)
+    end
+
+    it 'fails when request is not signed with the correct secret_key' do
+      @auth_id = subject.auth_id
+      @secret_key = 'its_bogus'
+      @sign_with = subject.sign_with
+
+      expect { subject.get("/resources") }.to raise_error(PassClient::ResponseError)
+    end
+  end
+
 
   context 'when submitting a request' do
     subject do
