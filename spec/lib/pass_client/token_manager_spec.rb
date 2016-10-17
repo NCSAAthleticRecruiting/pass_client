@@ -44,7 +44,7 @@ RSpec.describe PassClient::TokenManager do
         .and_return(unauthorized)
     end
     it 'raises an error on status == 401' do
-      expect{ subject.token! }.to raise_error described_class::RequestError
+      expect{ subject.token! }.to raise_error described_class::AuthorizationError
     end
   end
 
@@ -64,7 +64,7 @@ RSpec.describe PassClient::TokenManager do
       allow(connection_double)
         .to receive(:post)
         .and_return(unauthorized)
-      expect{ subject.renew! }.to raise_error described_class::RequestError
+      expect{ subject.renew! }.to raise_error described_class::AuthorizationError
     end
   end
 end

@@ -1,10 +1,9 @@
 require 'pass_client/connection'
 require 'pass_client/representers/token'
-require 'pry'
 
 module PassClient
   class TokenManager
-    RequestError = Class.new(StandardError)
+    AuthorizationError = Class.new(StandardError)
 
     def token!
       return config.token unless config.token == ""
@@ -40,7 +39,7 @@ module PassClient
     end
 
     def error_handler(response, method=nil)
-      raise RequestError, "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}"
+      raise AuthorizationError, "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}"
     end
 
   end
