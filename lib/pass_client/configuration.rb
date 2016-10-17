@@ -2,7 +2,7 @@ require 'pass_client/env'
 
 module PassClient
   class Configuration
-    attr_accessor :hostname, :port, :timeout, :open_timeout, :auth_id, :secret_key, :sign_with
+    attr_accessor :hostname, :port, :timeout, :open_timeout, :auth_id, :secret_key, :sign_with, :token
 
     def initialize
       @timeout = 1000
@@ -10,6 +10,7 @@ module PassClient
       @auth_id = "auth_id"
       @secret_key = "secret_key"
       @sign_with = :sha256
+      @token = ""
 
       case PassClient::Env.env
       when :staging

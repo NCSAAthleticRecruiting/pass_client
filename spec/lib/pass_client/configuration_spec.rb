@@ -10,6 +10,7 @@ RSpec.describe PassClient::Configuration do
     expect(subject.open_timeout).to eq 500
     expect(subject.port).to be_nil
     expect(subject.sign_with).to eq :sha256
+    expect(subject.token).to eq ""
   end
 
   it 'sets the hostname based on environment' do
@@ -22,14 +23,17 @@ RSpec.describe PassClient::Configuration do
     expect(subject.hostname). to eq "http://data.ncsasports.org"
   end
 
-  it 'can override default sign_with' do
-    subject = described_class.new
+  it 'can override the default sign_with' do
     subject.sign_with = :sha512
     expect(subject.sign_with).to eq :sha512
   end
 
+  it 'can override the default token' do
+    subject.token = "a_valid_json_web_token"
+    expect(subject.token).to eq "a_valid_json_web_token"
+  end
+
   it 'can override default auth_id and secret_key' do
-    subject = described_class.new
     subject.auth_id = "hello"
     subject.secret_key = "secret"
     expect(subject.auth_id).to eq "hello"
@@ -38,7 +42,6 @@ RSpec.describe PassClient::Configuration do
 
   it 'takes an optional init hash to set all values' do
     ENV['PASS_CLIENT_ENV'] = "something"
-    subject = described_class.new
     subject.timeout = "hello"
     subject.hostname = "secret"
     subject.port = 2222
