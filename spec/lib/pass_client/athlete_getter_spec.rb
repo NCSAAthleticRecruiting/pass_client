@@ -6,6 +6,7 @@ RSpec.describe PassClient::AthleteGetter do
   let(:id) { "123-abc-456" }
   let(:api_response) { Faraday::Response.new(status: 200, body: "") }
   let(:method) { :get }
+  let(:token) { "atoken" }
 
   before do
     allow(PassClient::Connection)
@@ -18,7 +19,7 @@ RSpec.describe PassClient::AthleteGetter do
 
   it 'sends a request to the correct address' do
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete/#{id}")
+      .to receive(method).with("/api/partner_athlete_search/v1/athlete/#{id}", nil, {authorization: token})
 
     subject.get
   end

@@ -1,4 +1,5 @@
 require 'json'
+require 'pass_client/token_manager'
 
 module PassClient
   module Athlete
@@ -16,6 +17,14 @@ module PassClient
 
     def error_handler(response, method=nil)
       raise RequestError, "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}"
+    end
+
+    def token
+      ::PassClient::TokenManager.new.token!
+    end
+
+    def auth_header
+      { authorization: token }
     end
   end
 end

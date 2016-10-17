@@ -12,7 +12,7 @@ module PassClient
     end
 
     def get
-      response = connection.get("/api/partner_athlete_search/v1/athlete/#{id}")
+      response = connection.get("/api/partner_athlete_search/v1/athlete/#{id}", nil, auth_header)
       if response.status.between?(200, 299)
         response
       else

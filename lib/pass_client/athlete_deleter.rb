@@ -12,7 +12,7 @@ module PassClient
     end
 
     def delete!
-      response = connection.delete("/api/partner_athlete_search/v1/athlete/#{id}")
+      response = connection.delete("/api/partner_athlete_search/v1/athlete/#{id}", nil, auth_header)
       if response.status.between?(200, 299)
         response
       else

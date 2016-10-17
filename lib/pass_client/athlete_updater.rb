@@ -13,7 +13,7 @@ module PassClient
     end
 
     def update!
-      response = connection.put("/api/partner_athlete_search/v1/athlete/#{id}", {athlete: convert_body})
+      response = connection.put("/api/partner_athlete_search/v1/athlete/#{id}", {athlete: convert_body}, auth_header)
       if response.status.between?(200, 299)
         response
       else

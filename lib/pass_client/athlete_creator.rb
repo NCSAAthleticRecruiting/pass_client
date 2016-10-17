@@ -12,7 +12,7 @@ module PassClient
     end
 
     def create!
-      response = connection.post("/api/partner_athlete_search/v1/athlete/", {athlete: convert_body})
+      response = connection.post("/api/partner_athlete_search/v1/athlete/", {athlete: convert_body}, auth_header)
       if response.status.between?(200, 299)
         response
       else
