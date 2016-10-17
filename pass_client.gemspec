@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "faraday"
-  spec.add_dependency "ey-hmac"
+  spec.add_dependency "ey-hmac", "2.2.0.ncsa"
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rake", "~> 10.0"
