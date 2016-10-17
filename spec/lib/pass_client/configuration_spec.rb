@@ -13,12 +13,12 @@ RSpec.describe PassClient::Configuration do
   end
 
   it 'sets the hostname based on environment' do
-    ENV['RAILS_ENV'] = "staging"
+    ENV['PASS_CLIENT_ENV'] = "staging"
     expect(subject.hostname). to eq "http://data-staging.ncsasports.org"
   end
 
   it 'sets the hostname based on environment' do
-    ENV['RAILS_ENV'] = "production"
+    ENV['PASS_CLIENT_ENV'] = "production"
     expect(subject.hostname). to eq "http://data.ncsasports.org"
   end
 
@@ -37,7 +37,7 @@ RSpec.describe PassClient::Configuration do
   end
 
   it 'takes an optional init hash to set all values' do
-    ENV['RAILS_ENV'] = "something"
+    ENV['PASS_CLIENT_ENV'] = "something"
     subject = described_class.new
     subject.timeout = "hello"
     subject.hostname = "secret"
