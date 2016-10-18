@@ -1,3 +1,5 @@
+require 'logger'
+
 module PassClient
   class Env
 
@@ -6,7 +8,7 @@ module PassClient
     end
 
     def self.logger
-      @logger ||= (defined? Rails) ? Rails.logger : Logger.new(STDOUT)
+      @logger ||= (defined? Rails) ? ::Rails.logger : ::Logger.new(STDOUT)
     end
 
     private
