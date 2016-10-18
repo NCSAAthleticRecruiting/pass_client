@@ -5,13 +5,12 @@ RSpec.describe PassClient::Athlete::Creator do
   let(:connection_double) { instance_double(PassClient::Connection) }
   let(:id) { "123-abc-456" }
   let(:update_body) { { email:"test@school.edu",sport_id:101} }
-
-  # let(:update_body) { "{\"email\":\"test@school.edu\",\"sport_id\":101}" }
   let(:api_response) { Faraday::Response.new(status: 200, body: "") }
   let(:method) { :post }
   let(:token) { "atoken" }
 
   before do
+    ENV['PASS_CLIENT_ENV'] = 'test'
     allow(PassClient::Connection)
       .to receive(:unsigned_instance)
       .and_return(connection_double)

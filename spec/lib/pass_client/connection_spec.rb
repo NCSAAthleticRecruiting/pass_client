@@ -287,6 +287,14 @@ RSpec.describe PassClient::Connection do
         end.to raise_error(PassClient::ResponseError)
       end
 
+      it 'logs the response on error when evn != :test' do
+        ENV['PASS_CLIENT_ENV'] = nil
+        expect(PassClient::Env.logger).to receive(:warn)
+        expect do
+          PassClient::Response.new(OpenStruct.new(status: 500)).status
+        end.to raise_error(PassClient::ResponseError)
+      end
+
       it 'returns the status code for 200' do
         expected_status = 200
         resulting_status = PassClient::Response.new(OpenStruct.new(status: expected_status)).status

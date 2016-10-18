@@ -13,6 +13,10 @@ module PassClient
     end
 
     def error_handler(response, method=nil)
+      if PassClient::Env.env != :test
+        PassClient::Env.logger.warn "RequestError method: #{method}"
+        PassClient::Env.logger.warn response.inspect
+      end
       raise RequestError, "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}, Response: #{response.inspect}"
     end
 
@@ -21,7 +25,7 @@ module PassClient
     end
 
     def auth_header
-      { authorization: token }#.to_json
+      { authorization: token }
     end
   end
 end
