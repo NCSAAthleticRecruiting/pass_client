@@ -1,14 +1,12 @@
-require 'pass_client/athlete_creator'
+require 'pass_client/athletes/updater'
 
-RSpec.describe PassClient::AthleteCreator do
-  subject { described_class.new(body: update_body) }
+RSpec.describe PassClient::Athlete::Updater do
+  subject { described_class.new(id: id, body: update_body) }
   let(:connection_double) { instance_double(PassClient::Connection) }
   let(:id) { "123-abc-456" }
   let(:update_body) { { email:"test@school.edu",sport_id:101} }
-
-  # let(:update_body) { "{\"email\":\"test@school.edu\",\"sport_id\":101}" }
   let(:api_response) { Faraday::Response.new(status: 200, body: "") }
-  let(:method) { :post }
+  let(:method) { :put }
   let(:token) { "atoken" }
 
   before do
@@ -18,24 +16,21 @@ RSpec.describe PassClient::AthleteCreator do
     allow(connection_double)
       .to receive(method)
       .and_return(api_response)
-    ::PassClient.configuration.token = token
   end
 
-  it 'sends a request to the correct address and accept a hash for update_body' do
-    subject = described_class.new(body: { email: "test@school.edu", sport_id: 101 })
+  it 'sends a request to the correct address' do
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete/", {athlete: update_body}.to_json, anything)
+      .to receive(method).with("/api/partner_athlete_search/v1/athlete/#{id}", {athlete: update_body}.to_json, anything )
 
-    subject.create!
+    subject.update!
   end
 
-  it 'sets the authorization header' do
-    expect(::PassClient.configuration.token).to eq "atoken"
-    subject = described_class.new(body: { email: "test@school.edu", sport_id: 101 })
+  it 'sets the auth_header and accept a hash for update_body' do
+    subject = described_class.new(id: id, body: { email: "test@school.edu", sport_id: 101 })
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete/", {athlete: update_body}.to_json, {authorization: token})
+      .to receive(method).with("/api/partner_athlete_search/v1/athlete/#{id}", {athlete: update_body}.to_json, {authorization: token})
 
-    subject.create!
+    subject.update!
   end
 
   context "with api responses" do
@@ -51,7 +46,7 @@ RSpec.describe PassClient::AthleteCreator do
         .to receive(method)
         .and_return(api_response)
 
-      response = subject.create!
+      response = subject.update!
       expect(response.status).to eq 200
       expect(response.body).to eq response_body
     end
@@ -62,7 +57,7 @@ RSpec.describe PassClient::AthleteCreator do
         .to receive(method)
         .and_return(api_response)
 
-      expect{ subject.create! }.to raise_error(PassClient::Athlete::RequestError)
+      expect{ subject.update! }.to raise_error(PassClient::Athlete::RequestError)
     end
 
     it 'raises a RequestError when the status == 301' do
@@ -71,7 +66,7 @@ RSpec.describe PassClient::AthleteCreator do
         .to receive(method)
         .and_return(api_response)
 
-      expect{ subject.create! }.to raise_error(PassClient::Athlete::RequestError)
+      expect{ subject.update! }.to raise_error(PassClient::Athlete::RequestError)
     end
   end
 end
