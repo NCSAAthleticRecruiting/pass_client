@@ -1,4 +1,3 @@
-require 'pass_client/connection'
 require 'pass_client/representers/token'
 
 module PassClient
@@ -27,7 +26,7 @@ module PassClient
     end
 
     def deserialize_body(body)
-      PassClient::Representer::Token.new(body)
+      ::PassClient::Representer::Token.new(body)
     end
 
     def connection

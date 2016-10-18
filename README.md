@@ -26,7 +26,7 @@ Create, update, and delete methods are available from the AthleteCreator, Athlet
 
 ## Configuration
 
-This gem must be configured with your auth_id and secret_key to work properly. Create an initializer in your rails project and set the appropriate values on the PassClient.
+This gem must be configured with your auth_id and secret_key to work properly. Create an initializer in your rails project and set the appropriate values on the PassClient. The gem will raise a ConnectionError if you attempt to connect to a signed resource without setting auth_id or secret_key.
 
 ```ruby
 PassClient.configure do |config|
