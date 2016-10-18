@@ -33,7 +33,7 @@ RSpec.describe PassClient::AthleteCreator do
     expect(::PassClient.configuration.token).to eq "atoken"
     subject = described_class.new(body: { email: "test@school.edu", sport_id: 101 })
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete/", {athlete: update_body}.to_json, {authorization: token}.to_json)
+      .to receive(method).with("/api/partner_athlete_search/v1/athlete/", {athlete: update_body}.to_json, {authorization: token})
 
     subject.create!
   end

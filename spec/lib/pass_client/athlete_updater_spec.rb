@@ -28,7 +28,7 @@ RSpec.describe PassClient::AthleteUpdater do
   it 'sets the auth_header and accept a hash for update_body' do
     subject = described_class.new(id: id, body: { email: "test@school.edu", sport_id: 101 })
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete/#{id}", {athlete: update_body}.to_json, {authorization: token}.to_json)
+      .to receive(method).with("/api/partner_athlete_search/v1/athlete/#{id}", {athlete: update_body}.to_json, {authorization: token})
 
     subject.update!
   end

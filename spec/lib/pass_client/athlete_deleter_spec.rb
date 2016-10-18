@@ -19,7 +19,7 @@ RSpec.describe PassClient::AthleteDeleter do
 
   it 'sends a request to the correct address' do
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete/#{id}", nil, {authorization: token}.to_json)
+      .to receive(method).with("/api/partner_athlete_search/v1/athlete/#{id}", nil, {authorization: token})
 
     subject.delete!
   end

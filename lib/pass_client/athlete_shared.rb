@@ -15,7 +15,7 @@ module PassClient
     end
 
     def error_handler(response, method=nil)
-      raise RequestError, "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}"
+      raise RequestError, "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}, Response: #{response.inspect}"
     end
 
     def token
