@@ -1,6 +1,6 @@
-require 'pass_client/athlete_getter'
+require 'pass_client/athletes/getter'
 
-RSpec.describe PassClient::AthleteGetter do
+RSpec.describe PassClient::Athlete::Getter do
   subject { described_class.new(id: id) }
   let(:connection_double) { instance_double(PassClient::Connection) }
   let(:id) { "123-abc-456" }
