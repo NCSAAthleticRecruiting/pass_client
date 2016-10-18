@@ -9,7 +9,7 @@ RSpec.describe PassClient do
 
   it 'sets default configuration values' do
     PassClient.reset
-    expect(PassClient.configuration.auth_id).to eq "auth_id"
+    expect(PassClient.configuration.auth_id).to eq "CHANGE_ME"
     expect(PassClient.configuration.timeout).to eq 1000
   end
 
@@ -20,7 +20,7 @@ RSpec.describe PassClient do
     expect(PassClient.configuration.auth_id).to eq "test_auth_id"
 
     PassClient.reset
-    expect(PassClient.configuration.auth_id).to eq "auth_id"
+    expect(PassClient.configuration.auth_id).to eq "CHANGE_ME"
   end
 
   it 'take a configuration block' do

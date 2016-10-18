@@ -6,8 +6,8 @@ RSpec.describe PassClient::Configuration do
   end
 
   it 'attr_readers get set to default values' do
-    expect(subject.auth_id).to eq "auth_id"
-    expect(subject.secret_key).to eq "secret_key"
+    expect(subject.auth_id).to eq "CHANGE_ME"
+    expect(subject.secret_key).to eq "CHANGE_ME"
     expect(subject.hostname).to eq "http://localhost"
     expect(subject.timeout).to eq 1000
     expect(subject.open_timeout).to eq 500

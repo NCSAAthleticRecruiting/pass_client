@@ -17,6 +17,9 @@ module PassClient
       else
         @test_instance
       end
+      if PassClient.configuration.auth_id == "CHANGE_ME" || PassClient.configuration.secret_key == "CHANGE_ME"
+        raise ConnectionError, "You are using default values for the auth_id or secret_key.\nThese values are unlikely to allow you to authenticate properly.\nSee README.md for instructions on configuring the gem."
+      end
     end
 
     def self.unsigned_instance

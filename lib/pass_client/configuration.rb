@@ -7,8 +7,8 @@ module PassClient
     def initialize
       @timeout = 1000
       @open_timeout = 500
-      @auth_id = "auth_id"
-      @secret_key = "secret_key"
+      @auth_id = "CHANGE_ME"
+      @secret_key = "CHANGE_ME"
       @sign_with = :sha256
       @token = ""
 

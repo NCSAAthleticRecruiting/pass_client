@@ -4,6 +4,7 @@ require 'ostruct'
 
 RSpec.describe PassClient::Connection do
   let(:config_data) { PassClient.configuration }
+
   before do
     ENV['PASS_CLIENT_ENV'] = 'test'
   end
@@ -299,6 +300,15 @@ RSpec.describe PassClient::Connection do
 
         expect(resulting_status).to eq(expected_status)
       end
+    end
+  end
+
+  describe "ConnectionError" do
+    before do
+      PassClient.reset
+    end
+    it 'raises an error when trying to make a signed connection with default values' do
+      expect{ described_class.instance }.to raise_error PassClient::ConnectionError
     end
   end
 end
