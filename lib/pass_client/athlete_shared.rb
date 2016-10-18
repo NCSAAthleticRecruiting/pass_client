@@ -1,5 +1,3 @@
-require 'pass_client/token_manager'
-
 module PassClient
   module Athlete
     RequestError = Class.new(StandardError)
@@ -7,7 +5,7 @@ module PassClient
     private
 
     def connection
-      Connection.unsigned_instance
+      ::PassClient::Connection.unsigned_instance
     end
 
     def request_body

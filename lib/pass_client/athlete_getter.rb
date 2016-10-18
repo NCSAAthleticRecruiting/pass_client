@@ -1,4 +1,3 @@
-require 'pass_client/connection'
 require 'pass_client/athlete_shared'
 
 module PassClient
@@ -32,7 +31,7 @@ module PassClient
     private
 
     def self.connection
-      Connection.unsigned_instance
+      ::PassClient::Connection.unsigned_instance
     end
   end
 end

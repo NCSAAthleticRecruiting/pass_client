@@ -1,4 +1,3 @@
-require 'pass_client/connection'
 require 'pass_client/athlete_shared'
 
 module PassClient
