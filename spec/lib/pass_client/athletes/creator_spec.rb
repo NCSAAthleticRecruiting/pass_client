@@ -2,6 +2,8 @@ require 'pass_client/athletes/creator'
 
 RSpec.describe PassClient::Athlete::Creator do
   subject { described_class.new(body: update_body) }
+
+  let(:token_manager_double) { instance_double(PassClient::TokenManager) }
   let(:connection_double) { instance_double(PassClient::Connection) }
   let(:id) { "123-abc-456" }
   let(:update_body) { { email:"test@school.edu",sport_id:101} }
@@ -11,6 +13,9 @@ RSpec.describe PassClient::Athlete::Creator do
 
   before do
     ENV['PASS_CLIENT_ENV'] = 'test'
+    allow(PassClient::TokenManager).to receive(:new).and_return(token_manager_double)
+    allow(token_manager_double).to receive(:renew!).and_return(token)
+    allow(token_manager_double).to receive(:token!).and_return(token)
     allow(PassClient::Connection)
       .to receive(:unsigned_instance)
       .and_return(connection_double)
@@ -54,6 +59,19 @@ RSpec.describe PassClient::Athlete::Creator do
       expect(response.status).to eq 200
       expect(response.body).to eq response_body
     end
+
+    it 'renew the jwt ONCE when the status == 401' do
+      ::PassClient.configuration.token = token
+      api_response = Faraday::Response.new(status: 401, body: "Error")
+      expect(connection_double)
+        .to receive(method)
+        .and_return(api_response)
+        .exactly(2).times
+
+      allow(subject).to receive(:token).and_return(token)
+      expect{ subject.create! }.to raise_error(PassClient::Athlete::RequestError)
+    end
+
 
     it 'raises a RequestError when the status == 404' do
       api_response = Faraday::Response.new(status: 404, body: "Error")
