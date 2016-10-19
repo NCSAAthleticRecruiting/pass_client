@@ -24,14 +24,14 @@ RSpec.describe PassClient::Athlete::Getter do
 
   it 'sends a request to the correct address' do
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete/#{id}", nil, {authorization: token})
+      .to receive(method).with(url: "/api/partner_athlete_search/v1/athlete/#{id}", headers: {authorization: token})
 
     subject.get
   end
 
   it 'gets the athlete_schema' do
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete_schema")
+      .to receive(method).with(url: "/api/partner_athlete_search/v1/athlete_schema")
 
     described_class.schema
   end

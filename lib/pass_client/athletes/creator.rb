@@ -18,7 +18,7 @@ module PassClient
       private
 
       def connect
-        connection.post("/api/partner_athlete_search/v1/athlete/", request_body, auth_header)
+        connection.post(url: "/api/partner_athlete_search/v1/athlete/", body: request_body, headers: auth_header)
       end
     end
   end

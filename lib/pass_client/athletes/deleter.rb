@@ -18,7 +18,7 @@ module PassClient
       private
 
       def connect
-        connection.delete("/api/partner_athlete_search/v1/athlete/#{id}", nil, auth_header)
+        connection.delete(url: "/api/partner_athlete_search/v1/athlete/#{id}", headers: auth_header)
       end
     end
   end

@@ -28,7 +28,7 @@ RSpec.describe PassClient::Athlete::Creator do
   it 'sends a request to the correct address and accept a hash for update_body' do
     subject = described_class.new(body: { email: "test@school.edu", sport_id: 101 })
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete/", {athlete: update_body}.to_json, anything)
+      .to receive(method).with(url: "/api/partner_athlete_search/v1/athlete/", body: {athlete: update_body}.to_json, headers: anything)
 
     subject.create!
   end
@@ -37,7 +37,7 @@ RSpec.describe PassClient::Athlete::Creator do
     expect(::PassClient.configuration.token).to eq "atoken"
     subject = described_class.new(body: { email: "test@school.edu", sport_id: 101 })
     expect(connection_double)
-      .to receive(method).with("/api/partner_athlete_search/v1/athlete/", {athlete: update_body}.to_json, {authorization: token})
+      .to receive(method).with(url: "/api/partner_athlete_search/v1/athlete/", body: {athlete: update_body}.to_json, headers: {authorization: token})
 
     subject.create!
   end

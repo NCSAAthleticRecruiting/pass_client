@@ -16,7 +16,7 @@ module PassClient
       end
 
       def self.schema
-        response = connection.get("/api/partner_athlete_search/v1/athlete_schema")
+        response = connection.get(url: "/api/partner_athlete_search/v1/athlete_schema")
         if response.status.between?(200, 299)
           response
         else
@@ -31,7 +31,7 @@ module PassClient
       end
 
       def connect
-        connection.get("/api/partner_athlete_search/v1/athlete/#{id}", nil, auth_header)
+        connection.get(url: "/api/partner_athlete_search/v1/athlete/#{id}", headers: auth_header)
       end
     end
   end

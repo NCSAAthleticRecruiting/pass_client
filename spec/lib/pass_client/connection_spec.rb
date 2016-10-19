@@ -98,7 +98,7 @@ RSpec.describe PassClient::Connection do
       @secret_key = subject.secret_key
       @sign_with = subject.sign_with
 
-      expect(subject.get("/resources").status).to eq(200)
+      expect(subject.get(url: "/resources").status).to eq(200)
     end
 
     it 'fails when request is not signed with the correct auth_id' do
@@ -106,7 +106,7 @@ RSpec.describe PassClient::Connection do
       @secret_key = subject.secret_key
       @sign_with = subject.sign_with
 
-      expect { subject.get("/resources") }.to raise_error(PassClient::ResponseError)
+      expect { subject.get(url: "/resources") }.to raise_error(PassClient::ResponseError)
     end
 
     it 'fails when request is not signed with the correct secret_key' do
@@ -114,7 +114,7 @@ RSpec.describe PassClient::Connection do
       @secret_key = 'its_bogus'
       @sign_with = subject.sign_with
 
-      expect { subject.get("/resources") }.to raise_error(PassClient::ResponseError)
+      expect { subject.get(url: "/resources") }.to raise_error(PassClient::ResponseError)
     end
   end
 
@@ -148,7 +148,7 @@ RSpec.describe PassClient::Connection do
 
       expect(subject.sign_with).to eq :sha512
       expect(subject.sign_with).to eq @sign_with
-      expect(subject.get("/resources").status).to eq(200)
+      expect(subject.get(url: "/resources").status).to eq(200)
     end
 
     it 'fails when request is not signed with the correct auth_id' do
@@ -156,7 +156,7 @@ RSpec.describe PassClient::Connection do
       @secret_key = subject.secret_key
       @sign_with = subject.sign_with
 
-      expect { subject.get("/resources") }.to raise_error(PassClient::ResponseError)
+      expect { subject.get(url: "/resources") }.to raise_error(PassClient::ResponseError)
     end
 
     it 'fails when request is not signed with the correct secret_key' do
@@ -164,7 +164,7 @@ RSpec.describe PassClient::Connection do
       @secret_key = 'its_bogus'
       @sign_with = subject.sign_with
 
-      expect { subject.get("/resources") }.to raise_error(PassClient::ResponseError)
+      expect { subject.get(url: "/resources") }.to raise_error(PassClient::ResponseError)
     end
   end
 
@@ -209,18 +209,18 @@ RSpec.describe PassClient::Connection do
       it "##{verb} delegates to Faraday with url, params and headers" do
         expect(faraday_mock).to receive(verb).with(url, params, headers)
 
-        subject.send(verb, url, params, headers)
+        subject.send(verb, url: url, params: params, headers: headers)
       end
 
       it "##{verb} returns an ApiClient::Response object" do
         allow(faraday_mock).to receive(verb).and_return(faraday_response)
-        response = subject.send(verb, url)
+        response = subject.send(verb, url: url)
 
         expect(response).to be_instance_of(PassClient::Response)
       end
 
       it "##{verb} configures the request with timeouts" do
-        subject.send(verb, url)
+        subject.send(verb, url: url)
 
         expect(config_spy).to have_received(:options).exactly(2).times
         expect(config_spy).to have_received(:timeout=).with(config_data.timeout)
@@ -228,7 +228,7 @@ RSpec.describe PassClient::Connection do
       end
 
       it "##{verb} sets the content type" do
-        subject.send(verb, url)
+        subject.send(verb, url: url)
 
         expect(config_spy).to have_received(:headers)
         expect(headers['Content-Type']).to eq('application/json')
@@ -244,20 +244,20 @@ RSpec.describe PassClient::Connection do
       end
 
       it "delegates a #{verb} to Faraday with url, body, and headers" do
-        subject.send(verb, url, body, headers)
+        subject.send(verb, url: url, body: body, headers: headers)
 
         expect(faraday_mock).to have_received(verb).with(url, body, headers)
       end
 
       it "#{verb} returns an ApiClient::Response object" do
         allow(faraday_mock).to receive(verb).and_return(faraday_response)
-        response = subject.send(verb, url)
+        response = subject.send(verb, url: url)
 
         expect(response).to be_instance_of(PassClient::Response)
       end
 
       it 'configures the request with timeouts' do
-        subject.send(verb, url)
+        subject.send(verb, url: url)
 
         expect(config_spy).to have_received(:options).exactly(2).times
         expect(config_spy).to have_received(:timeout=).with(config_data.timeout)
@@ -265,7 +265,7 @@ RSpec.describe PassClient::Connection do
       end
 
       it "##{verb} sets the content type" do
-        subject.send(verb, url)
+        subject.send(verb, url: url)
 
         expect(config_spy).to have_received(:headers)
         expect(headers['Content-Type']).to eq('application/json')

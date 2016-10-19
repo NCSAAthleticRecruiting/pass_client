@@ -75,7 +75,7 @@ module PassClient
     end
 
     [:get, :delete, :head].each do |verb|
-      define_method(verb) do |url, params = nil, headers = nil, &block|
+      define_method(verb) do |url:, params: nil, headers: nil, &block|
         unwrapped_repsonse = connection.send(verb, url, params, headers) do |r|
           r.options.timeout = timeout
           r.options.open_timeout = open_timeout
@@ -90,7 +90,7 @@ module PassClient
     end
 
     [:put, :post, :patch].each do |verb|
-      define_method(verb) do |url, body = nil, headers = nil, &block|
+      define_method(verb) do |url:, body: nil, headers: nil, &block|
         unwrapped_response = connection.send(verb, url, body, headers) do |r|
           r.options.timeout = timeout
           r.options.open_timeout = open_timeout

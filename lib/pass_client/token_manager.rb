@@ -20,7 +20,7 @@ module PassClient
     private
 
     def connect
-      connection.post("/api/partner_athlete_search/v1/issue_token/", {auth_id: config.auth_id}.to_json)
+      connection.post(url: "/api/partner_athlete_search/v1/issue_token/", body: {auth_id: config.auth_id}.to_json)
     end
 
     def set_token(body)
