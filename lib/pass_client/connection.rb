@@ -11,13 +11,13 @@ module PassClient
     attr_reader :hostname, :open_timeout, :timeout, :auth_id, :secret_key, :port, :sign_with, :signed
 
     def self.instance
+      if ::PassClient.configuration.auth_id == "CHANGE_ME" || PassClient.configuration.secret_key == "CHANGE_ME"
+        raise ConnectionError, "You are using default values for the auth_id or secret_key.\nThese values are unlikely to allow you to authenticate properly.\nSee README.md for instructions on configuring the gem."
+      end
       if @test_instance.nil?
         self.new(PassClient::Env.env)
       else
         @test_instance
-      end
-      if ::PassClient.configuration.auth_id == "CHANGE_ME" || PassClient.configuration.secret_key == "CHANGE_ME"
-        raise ConnectionError, "You are using default values for the auth_id or secret_key.\nThese values are unlikely to allow you to authenticate properly.\nSee README.md for instructions on configuring the gem."
       end
     end
 
@@ -117,7 +117,7 @@ module PassClient
       response_code = response.status
       if response_code < 200 || response_code >= 300
         PassClient::Env.logger.warn response.inspect unless PassClient::Env.env == :test
-        raise ResponseError, "#{response_code} code for request, response: #{self}"
+        raise ResponseError, "#{response_code} code for request, response: #{response.inspect}"
       else
         response_code
       end
