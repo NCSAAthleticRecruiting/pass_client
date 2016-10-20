@@ -20,12 +20,43 @@ module PassClient
       raise RequestError, "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}, Response: #{response.inspect}"
     end
 
-    def token
-      ::PassClient::TokenManager.new.token!
-    end
-
     def auth_header
       { authorization: token }
+    end
+
+    def execute
+      response = connect
+      if response.status == 401
+        retry_connection
+      else
+        response_handler(response)
+      end
+    end
+
+    def retry_connection
+      renew_token
+      response = connect
+      response_handler(response)
+    end
+
+    def response_handler(response)
+      if response.status.between?(200, 299)
+        response
+      else
+        error_handler(response, __method__)
+      end
+    end
+
+    def renew_token
+      token_manager.renew!
+    end
+
+    def token
+      token_manager.token!
+    end
+
+    def token_manager
+      ::PassClient::TokenManager.new
     end
   end
 end

@@ -12,16 +12,11 @@ module PassClient
       end
 
       def get
-        response = connection.get("/api/partner_athlete_search/v1/athlete/#{id}", nil, auth_header)
-        if response.status.between?(200, 299)
-          response
-        else
-          error_handler(response, __method__)
-        end
+        execute
       end
 
       def self.schema
-        response = connection.get("/api/partner_athlete_search/v1/athlete_schema")
+        response = connection.get(url: "/api/partner_athlete_search/v1/athlete_schema")
         if response.status.between?(200, 299)
           response
         else
@@ -33,6 +28,10 @@ module PassClient
 
       def self.connection
         ::PassClient::Connection.unsigned_instance
+      end
+
+      def connect
+        connection.get(url: "/api/partner_athlete_search/v1/athlete/#{id}", headers: auth_header)
       end
     end
   end
