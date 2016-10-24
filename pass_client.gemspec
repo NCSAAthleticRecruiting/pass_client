@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{A gem to manage connections to the Partner Athlete Search Service (PASS)}
   spec.description   = %q{A gem to manage connections to the Partner Athlete Search Service (PASS)}
-  spec.homepage      = "http://gems.ncsasports.org "
+  spec.homepage      = "https://github.com/NCSAAthleticRecruiting/pass_client"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -20,6 +20,9 @@ Gem::Specification.new do |spec|
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
+
+  spec.cert_chain  = ['certs/pass_client_gem-public_cert.pem']
+  spec.signing_key = File.expand_path("~/.ssh/pass_client_gem-private_key.pem") if $0 =~ /gem\z/
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
