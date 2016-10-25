@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "gems.ncsasports.org "
+    spec.metadata['allowed_push_host'] = "gems.ncsasports.org"
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "faraday"
-  spec.add_dependency "ey-hmac", "2.2.0.ncsa"
+  spec.add_dependency "ey-hmac", "~> 2.2"
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rake", "~> 10.0"
