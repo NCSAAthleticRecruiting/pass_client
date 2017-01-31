@@ -106,19 +106,6 @@ module PassClient
   class Response < SimpleDelegator
     def initialize(faraday_response)
       super
-      check_response_code(faraday_response)
-    end
-
-    private
-
-    def check_response_code(response)
-      response_code = response.status
-      if response_code >= 500
-        PassClient::Env.logger.warn response.inspect
-        raise ResponseError, "#{response_code} code for request, response: #{response.inspect}"
-      else
-        response_code
-      end
     end
   end
 end

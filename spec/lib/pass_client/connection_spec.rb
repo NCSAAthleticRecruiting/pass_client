@@ -102,6 +102,18 @@ RSpec.describe PassClient::Connection do
       expect(subject.get(url: "/resources").status).to eq(200)
     end
 
+    it 'converts the response' do
+      @auth_id = subject.auth_id
+      @secret_key = subject.secret_key
+      @sign_with = subject.sign_with
+      response = subject.get(url: "/resources")
+
+      expect(subject.sign_with).to eq :sha256
+      expect(response.class).to eq(PassClient::Response)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("")
+    end
+
     it 'returns a 401 error when request is not signed with the correct auth_id' do
       @auth_id = 'its_bogus'
       @secret_key = subject.secret_key
@@ -148,6 +160,17 @@ RSpec.describe PassClient::Connection do
       expect(sha512_subject.sign_with).to eq :sha512
       expect(sha512_subject.sign_with).to eq @sign_with
       expect(sha512_subject.get(url: "/resources").status).to eq(200)
+    end
+
+    it 'converts the response' do
+      @auth_id = sha512_subject.auth_id
+      @secret_key = sha512_subject.secret_key
+      @sign_with = sha512_subject.sign_with
+      response = sha512_subject.get(url: "/resources")
+
+      expect(response.class).to eq(PassClient::Response)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("")
     end
 
     it 'returns a 401 code when request is not signed with the correct auth_id' do
@@ -272,6 +295,8 @@ RSpec.describe PassClient::Connection do
   end
 
   describe PassClient::Response do
+    subject { described_class.new(:test) }
+
     describe '#status' do
       it 'returns the status code for 404' do
         expected_status = 404
@@ -280,18 +305,11 @@ RSpec.describe PassClient::Connection do
         expect(resulting_status).to eq(expected_status)
       end
 
-      it 'raises an PassClient::RequestError for 500' do
-        expect do
-          PassClient::Response.new(OpenStruct.new(status: 500)).status
-        end.to raise_error(PassClient::ResponseError)
-      end
+      it 'returns the status code for 200' do
+        expected_status = 200
+        resulting_status = PassClient::Response.new(OpenStruct.new(status: expected_status)).status
 
-      it 'logs the response on error when env != :test' do
-        ENV['PASS_CLIENT_ENV'] = nil
-        expect(PassClient::Env.logger).to receive(:warn)
-        expect do
-          PassClient::Response.new(OpenStruct.new(status: 500)).status
-        end.to raise_error(PassClient::ResponseError)
+        expect(resulting_status).to eq(expected_status)
       end
 
       it 'returns the status code for 200' do
