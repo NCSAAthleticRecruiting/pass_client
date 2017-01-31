@@ -287,9 +287,19 @@ RSpec.describe PassClient::Connection do
         end.to raise_error(PassClient::ResponseError)
       end
 
-      it 'logs the response on error when evn != :test' do
+      it 'logs the response on error when env != :test and configuration.silent is false' do
         ENV['PASS_CLIENT_ENV'] = nil
         expect(PassClient::Env.logger).to receive(:warn)
+        expect do
+          PassClient::Response.new(OpenStruct.new(status: 500)).status
+        end.to raise_error(PassClient::ResponseError)
+      end
+
+      it 'does not log an error when configuration.silent is true' do
+        ENV['PASS_CLIENT_ENV'] = "development"
+        PassClient.configuration.silent = true
+
+        expect(PassClient::Env.logger).not_to receive(:warn)
         expect do
           PassClient::Response.new(OpenStruct.new(status: 500)).status
         end.to raise_error(PassClient::ResponseError)
