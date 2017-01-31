@@ -79,7 +79,6 @@ module PassClient
         unwrapped_repsonse = connection.send(verb, url, params, headers) do |r|
           r.options.timeout = timeout
           r.options.open_timeout = open_timeout
-
           r.headers['Content-Type'] = 'application/json'
 
           block.call(r) if block
@@ -94,7 +93,6 @@ module PassClient
         unwrapped_response = connection.send(verb, url, body, headers) do |r|
           r.options.timeout = timeout
           r.options.open_timeout = open_timeout
-
           r.headers['Content-Type'] = 'application/json'
 
           block.call(r) if block
@@ -115,8 +113,8 @@ module PassClient
 
     def check_response_code(response)
       response_code = response.status
-      if response_code < 200 || response_code >= 300
-        PassClient::Env.logger.warn response.inspect unless PassClient::Env.env == :test
+      if response_code >= 500
+        PassClient::Env.logger.warn response.inspect
         raise ResponseError, "#{response_code} code for request, response: #{response.inspect}"
       else
         response_code

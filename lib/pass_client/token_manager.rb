@@ -43,6 +43,5 @@ module PassClient
     def error_handler(response, method=nil)
       raise AuthorizationError, "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}"
     end
-
   end
 end
