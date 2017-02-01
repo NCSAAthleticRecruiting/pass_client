@@ -11,7 +11,7 @@ module PassClient
       @secret_key = "CHANGE_ME"
       @sign_with = :sha256
       @token = ""
-      @silent = false
+      @silent = true
 
       case PassClient::Env.env
       when :staging

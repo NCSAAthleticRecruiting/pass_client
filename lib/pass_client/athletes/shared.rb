@@ -13,7 +13,7 @@ module PassClient
     end
 
     def error_handler(response, method=nil)
-      if PassClient::Env.env != :test || PassClient.configuration.silent == true
+      if PassClient.configuration.silent == false
         PassClient::Env.logger.warn "RequestError method: #{method}"
         PassClient::Env.logger.warn response.inspect
       end
