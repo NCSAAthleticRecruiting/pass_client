@@ -14,6 +14,7 @@ RSpec.describe PassClient::Configuration do
     expect(subject.port).to be_nil
     expect(subject.sign_with).to eq :sha256
     expect(subject.token).to eq ""
+    expect(subject.silent).to be_truthy
   end
 
   it 'sets the hostname based on environment' do

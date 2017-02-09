@@ -48,6 +48,7 @@ module PassClient
       @port = config.port
       @sign_with = config.sign_with
       @signed = signed
+      @silent = config.silent
 
       # This allows stubbing out the server rack application
       # to allow testing for end to end testing of authentication
@@ -59,7 +60,7 @@ module PassClient
 
     def connection
       @connection ||= Faraday.new(base_uri, ssl: {verify: false}) do |c|
-        c.response :logger unless PassClient::Env.env == :test
+        c.response :logger unless @silent
         if signed
           c.use :hmac, auth_id, secret_key, sign_with: sign_with
         end
@@ -116,7 +117,7 @@ module PassClient
     def check_response_code(response)
       response_code = response.status
       if response_code < 200 || response_code >= 300
-        PassClient::Env.logger.warn response.inspect unless PassClient::Env.env == :test
+        PassClient::Env.logger.warn response.inspect unless PassClient.configuration.silent == true
         raise ResponseError, "#{response_code} code for request, response: #{response.inspect}"
       else
         response_code
