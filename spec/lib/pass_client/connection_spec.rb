@@ -312,8 +312,8 @@ RSpec.describe PassClient::Connection do
         expect(resulting_status).to eq(expected_status)
       end
 
-      it 'returns the status code for 200' do
-        expected_status = 200
+      it 'returns the status code for 500' do
+        expected_status = 500
         resulting_status = PassClient::Response.new(OpenStruct.new(status: expected_status)).status
 
         expect(resulting_status).to eq(expected_status)
