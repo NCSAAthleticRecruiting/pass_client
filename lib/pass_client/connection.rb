@@ -80,7 +80,6 @@ module PassClient
         unwrapped_repsonse = connection.send(verb, url, params, headers) do |r|
           r.options.timeout = timeout
           r.options.open_timeout = open_timeout
-
           r.headers['Content-Type'] = 'application/json'
 
           block.call(r) if block
@@ -95,7 +94,6 @@ module PassClient
         unwrapped_response = connection.send(verb, url, body, headers) do |r|
           r.options.timeout = timeout
           r.options.open_timeout = open_timeout
-
           r.headers['Content-Type'] = 'application/json'
 
           block.call(r) if block
@@ -109,19 +107,6 @@ module PassClient
   class Response < SimpleDelegator
     def initialize(faraday_response)
       super
-      check_response_code(faraday_response)
-    end
-
-    private
-
-    def check_response_code(response)
-      response_code = response.status
-      if response_code < 200 || response_code >= 300
-        PassClient::Env.logger.warn response.inspect unless PassClient.configuration.silent == true
-        raise ResponseError, "#{response_code} code for request, response: #{response.inspect}"
-      else
-        response_code
-      end
     end
   end
 end

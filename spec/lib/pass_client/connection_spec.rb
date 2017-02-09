@@ -98,23 +98,36 @@ RSpec.describe PassClient::Connection do
       @secret_key = subject.secret_key
       @sign_with = subject.sign_with
 
+      expect(subject.sign_with).to eq :sha256
       expect(subject.get(url: "/resources").status).to eq(200)
     end
 
-    it 'fails when request is not signed with the correct auth_id' do
+    it 'converts the response' do
+      @auth_id = subject.auth_id
+      @secret_key = subject.secret_key
+      @sign_with = subject.sign_with
+      response = subject.get(url: "/resources")
+
+      expect(subject.sign_with).to eq :sha256
+      expect(response.class).to eq(PassClient::Response)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("")
+    end
+
+    it 'returns a 401 error when request is not signed with the correct auth_id' do
       @auth_id = 'its_bogus'
       @secret_key = subject.secret_key
       @sign_with = subject.sign_with
 
-      expect { subject.get(url: "/resources") }.to raise_error(PassClient::ResponseError)
+      expect(subject.get(url: "/resources").status).to eq 401
     end
 
-    it 'fails when request is not signed with the correct secret_key' do
+    it 'returns a 401 error when request is not signed with the correct secret_key' do
       @auth_id = subject.auth_id
       @secret_key = 'its_bogus'
       @sign_with = subject.sign_with
 
-      expect { subject.get(url: "/resources") }.to raise_error(PassClient::ResponseError)
+      expect(subject.get(url: "/resources").status).to eq 401
     end
   end
 
@@ -125,6 +138,7 @@ RSpec.describe PassClient::Connection do
       end
     end
 
+    let(:sha512_subject) { described_class.new(:test, rack_app: stub_app) }
     let(:stub_app) do
       ->(env) do
         authenticated = Ey::Hmac.authenticated?(
@@ -137,37 +151,44 @@ RSpec.describe PassClient::Connection do
       end
     end
 
-    subject do
-      described_class.new(:test, rack_app: stub_app)
-    end
-
     it 'configures signing of successful requests' do
-      @auth_id = subject.auth_id
-      @secret_key = subject.secret_key
-      @sign_with = subject.sign_with
+      @auth_id = sha512_subject.auth_id
+      @secret_key = sha512_subject.secret_key
+      @sign_with = sha512_subject.sign_with
 
-      expect(subject.sign_with).to eq :sha512
-      expect(subject.sign_with).to eq @sign_with
-      expect(subject.get(url: "/resources").status).to eq(200)
+      expect(config_data.sign_with).to eq :sha512
+      expect(sha512_subject.sign_with).to eq :sha512
+      expect(sha512_subject.sign_with).to eq @sign_with
+      expect(sha512_subject.get(url: "/resources").status).to eq(200)
     end
 
-    it 'fails when request is not signed with the correct auth_id' do
+    it 'converts the response' do
+      @auth_id = sha512_subject.auth_id
+      @secret_key = sha512_subject.secret_key
+      @sign_with = sha512_subject.sign_with
+      response = sha512_subject.get(url: "/resources")
+
+      expect(response.class).to eq(PassClient::Response)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("")
+    end
+
+    it 'returns a 401 code when request is not signed with the correct auth_id' do
       @auth_id = 'its_bogus'
-      @secret_key = subject.secret_key
-      @sign_with = subject.sign_with
+      @secret_key = sha512_subject.secret_key
+      @sign_with = sha512_subject.sign_with
 
-      expect { subject.get(url: "/resources") }.to raise_error(PassClient::ResponseError)
+      expect(sha512_subject.get(url: "/resources").status).to eq 401
     end
 
-    it 'fails when request is not signed with the correct secret_key' do
-      @auth_id = subject.auth_id
+    it 'returns a 401 code when request is not signed with the correct secret_key' do
+      @auth_id = sha512_subject.auth_id
       @secret_key = 'its_bogus'
-      @sign_with = subject.sign_with
+      @sign_with = sha512_subject.sign_with
 
-      expect { subject.get(url: "/resources") }.to raise_error(PassClient::ResponseError)
+      expect(sha512_subject.get(url: "/resources").status).to eq 401
     end
   end
-
 
   context 'when submitting a request' do
     subject do
@@ -274,37 +295,25 @@ RSpec.describe PassClient::Connection do
   end
 
   describe PassClient::Response do
+    subject { described_class.new(:test) }
+
     describe '#status' do
-      it 'raises an PassClient::RequestError for 404' do
-        expect do
-          PassClient::Response.new(OpenStruct.new(status: 404)).status
-        end.to raise_error(PassClient::ResponseError)
-      end
+      it 'returns the status code for 404' do
+        expected_status = 404
+        resulting_status = PassClient::Response.new(OpenStruct.new(status: expected_status)).status
 
-      it 'raises an PassClient::RequestError for 500' do
-        expect do
-          PassClient::Response.new(OpenStruct.new(status: 500)).status
-        end.to raise_error(PassClient::ResponseError)
-      end
-
-      it 'logs the response on error when configuration.silent is false' do
-        PassClient.configuration.silent = false
-        expect(PassClient::Env.logger).to receive(:warn)
-        expect do
-          PassClient::Response.new(OpenStruct.new(status: 500)).status
-        end.to raise_error(PassClient::ResponseError)
-        PassClient.configuration.silent = true
-      end
-
-      it 'does not log an error when configuration.silent is true' do
-        expect(PassClient::Env.logger).not_to receive(:warn)
-        expect do
-          PassClient::Response.new(OpenStruct.new(status: 500)).status
-        end.to raise_error(PassClient::ResponseError)
+        expect(resulting_status).to eq(expected_status)
       end
 
       it 'returns the status code for 200' do
         expected_status = 200
+        resulting_status = PassClient::Response.new(OpenStruct.new(status: expected_status)).status
+
+        expect(resulting_status).to eq(expected_status)
+      end
+
+      it 'returns the status code for 500' do
+        expected_status = 500
         resulting_status = PassClient::Response.new(OpenStruct.new(status: expected_status)).status
 
         expect(resulting_status).to eq(expected_status)
