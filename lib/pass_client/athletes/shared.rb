@@ -18,17 +18,13 @@ module PassClient
 
     def execute
       response = connect
-      if response.status == 401
-        retry_connection
-      else
-        response
-      end
+      return retry_connection if response.status == 401
+      response
     end
 
     def retry_connection
       renew_token
-      response = connect
-      response
+      connect
     end
 
     def renew_token
