@@ -53,7 +53,7 @@ RSpec.describe PassClient::Athlete::Getter do
         .exactly(2).times
 
       allow(subject).to receive(:token).and_return(token)
-      expect{ subject.get }.to raise_error(PassClient::Athlete::RequestError)
+      expect{ subject.get }.to_not raise_error
     end
 
     it 'returns the response object' do
@@ -66,22 +66,16 @@ RSpec.describe PassClient::Athlete::Getter do
       expect(response.body).to eq response_body
     end
 
-    it 'raises a RequestError when the status == 404' do
-      api_response = Faraday::Response.new(status: 404, body: "Error")
-      expect(connection_double)
+    it 'raises no exceptions when the status == 404' do
+      response_404 = Faraday::Response.new(status: 404, body: "Error")
+      allow(connection_double)
         .to receive(method)
-        .and_return(api_response)
+        .and_return(response_404)
+      subject = described_class.new(id: id)
 
-      expect{ subject.get }.to raise_error(PassClient::Athlete::RequestError)
-    end
-
-    it 'raises a RequestError when the status == 301' do
-      api_response = Faraday::Response.new(status: 301, body: "Error")
-      expect(connection_double)
-        .to receive(method)
-        .and_return(api_response)
-
-      expect{ subject.get }.to raise_error(PassClient::Athlete::RequestError)
+      expect{ subject.get }.to_not raise_error
+      response = subject.get
+      expect(response.status).to eq 404
     end
   end
 end
