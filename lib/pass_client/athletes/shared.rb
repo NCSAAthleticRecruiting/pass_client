@@ -12,14 +12,6 @@ module PassClient
       { athlete: body }.to_json
     end
 
-    def error_handler(response, method=nil)
-      if PassClient.configuration.silent == false
-        PassClient::Env.logger.warn "RequestError method: #{method}"
-        PassClient::Env.logger.warn response.inspect
-      end
-      raise RequestError, "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}, Response: #{response.inspect}"
-    end
-
     def auth_header
       { authorization: token }
     end
@@ -29,22 +21,14 @@ module PassClient
       if response.status == 401
         retry_connection
       else
-        response_handler(response)
+        response
       end
     end
 
     def retry_connection
       renew_token
       response = connect
-      response_handler(response)
-    end
-
-    def response_handler(response)
-      if response.status.between?(200, 299)
-        response
-      else
-        error_handler(response, __method__)
-      end
+      response
     end
 
     def renew_token
