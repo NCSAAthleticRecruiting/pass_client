@@ -38,6 +38,6 @@ RSpec.describe PassClient::Athlete::Deleter do
       .exactly(2).times
 
     allow(subject).to receive(:token).and_return(token)
-    expect{ subject.delete! }.to raise_error(PassClient::Athlete::RequestError)
+    expect{ subject.delete! }.to_not raise_error
   end
 end

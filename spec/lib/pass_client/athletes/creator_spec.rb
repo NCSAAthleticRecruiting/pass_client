@@ -6,7 +6,7 @@ RSpec.describe PassClient::Athlete::Creator do
   let(:token_manager_double) { instance_double(PassClient::TokenManager) }
   let(:connection_double) { instance_double(PassClient::Connection) }
   let(:id) { "123-abc-456" }
-  let(:update_body) { { email:"test@school.edu",sport_id:101} }
+  let(:update_body) { { email:"test@school.edu", sport_id:101} }
   let(:api_response) { Faraday::Response.new(status: 200, body: "") }
   let(:method) { :post }
   let(:token) { "atoken" }
@@ -43,7 +43,7 @@ RSpec.describe PassClient::Athlete::Creator do
   end
 
   context "with api responses" do
-  let(:api_response) { Faraday::Response.new(status: 200, body: response_body) }
+    let(:api_response) { Faraday::Response.new(status: 200, body: response_body) }
     let(:response_body) do
       {'data' =>
         { 'id' => id, 'attributes' => "All Athlete Data", 'type' => "Athlete"}
@@ -69,26 +69,18 @@ RSpec.describe PassClient::Athlete::Creator do
         .exactly(2).times
 
       allow(subject).to receive(:token).and_return(token)
-      expect{ subject.create! }.to raise_error(PassClient::Athlete::RequestError)
+      expect{ subject.create! }.to_not raise_error
     end
 
-
-    it 'raises a RequestError when the status == 404' do
-      api_response = Faraday::Response.new(status: 404, body: "Error")
-      expect(connection_double)
+    it 'raises no exceptions when the status == 404' do
+      response_404 = Faraday::Response.new(status: 404, body: "Error")
+      allow(connection_double)
         .to receive(method)
-        .and_return(api_response)
+        .and_return(response_404)
 
-      expect{ subject.create! }.to raise_error(PassClient::Athlete::RequestError)
-    end
-
-    it 'raises a RequestError when the status == 301' do
-      api_response = Faraday::Response.new(status: 301, body: "Error")
-      expect(connection_double)
-        .to receive(method)
-        .and_return(api_response)
-
-      expect{ subject.create! }.to raise_error(PassClient::Athlete::RequestError)
+      expect{ subject.create! }.to_not raise_error
+      response = subject.create!
+      expect(response.status).to eq 404
     end
   end
 end
