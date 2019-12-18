@@ -1,5 +1,6 @@
-require 'pass_client/token_manager'
-require 'json'
+# frozen_string_literal: true
+require "pass_client/token_manager"
+require "json"
 
 RSpec.describe PassClient::TokenManager do
   subject { described_class.new }
@@ -17,13 +18,12 @@ RSpec.describe PassClient::TokenManager do
   let(:auth_id) { ::PassClient.configuration.auth_id }
   let(:api_response) { Faraday::Response.new(status: 200, body: response_body.to_json) }
   let(:response_body) do
-    {'data' =>
-      { 'id' => auth_id, 'attributes' => { 'token' => "secret_json_web_token" }, 'type' => "Athlete"}
-    }
+    { "data" =>
+      { "id" => auth_id, "attributes" => { "token" => "secret_json_web_token" }, "type" => "Athlete" } }
   end
   let(:unauthorized) { Faraday::Response.new(status: 401, body: "Not Allowed!") }
 
-  it 'returns the token' do
+  it "returns the token" do
     expect(::PassClient.configuration.token).to eq ""
     expect(connection_double)
       .to receive(:post)
@@ -43,8 +43,8 @@ RSpec.describe PassClient::TokenManager do
         .to receive(:post)
         .and_return(unauthorized)
     end
-    it 'raises an error on status == 401' do
-      expect{ subject.token! }.to raise_error described_class::AuthorizationError
+    it "raises an error on status == 401" do
+      expect { subject.token! }.to raise_error described_class::AuthorizationError
     end
   end
 
@@ -53,18 +53,18 @@ RSpec.describe PassClient::TokenManager do
       ::PassClient.configuration.token = "an existing token"
     end
 
-    it 'fetches and sets a new token ' do
+    it "fetches and sets a new token " do
       expect(::PassClient.configuration.token).to eq "an existing token"
       expect(subject.token!).to eq "an existing token"
       subject.renew!
       expect(::PassClient.configuration.token).to eq "secret_json_web_token"
     end
 
-    it 'handles 401 ' do
+    it "handles 401 " do
       allow(connection_double)
         .to receive(:post)
         .and_return(unauthorized)
-      expect{ subject.renew! }.to raise_error described_class::AuthorizationError
+      expect { subject.renew! }.to raise_error described_class::AuthorizationError
     end
   end
 end

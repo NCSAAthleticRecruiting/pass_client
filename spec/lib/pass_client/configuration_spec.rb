@@ -1,11 +1,12 @@
-require 'pass_client/configuration'
+# frozen_string_literal: true
+require "pass_client/configuration"
 RSpec.describe PassClient::Configuration do
   subject { described_class.new }
   before do
-    ENV['PASS_CLIENT_ENV'] = nil
+    ENV["PASS_CLIENT_ENV"] = nil
   end
 
-  it 'attr_readers get set to default values' do
+  it "attr_readers get set to default values" do
     expect(subject.auth_id).to eq "CHANGE_ME"
     expect(subject.secret_key).to eq "CHANGE_ME"
     expect(subject.hostname).to eq "http://localhost"
@@ -17,35 +18,35 @@ RSpec.describe PassClient::Configuration do
     expect(subject.silent).to be_truthy
   end
 
-  it 'sets the hostname based on environment' do
-    ENV['PASS_CLIENT_ENV'] = "staging"
+  it "sets the hostname based on environment" do
+    ENV["PASS_CLIENT_ENV"] = "staging"
     expect(subject.hostname). to eq "http://data-staging.ncsasports.org"
   end
 
-  it 'sets the hostname based on environment' do
-    ENV['PASS_CLIENT_ENV'] = "production"
+  it "sets the hostname based on environment" do
+    ENV["PASS_CLIENT_ENV"] = "production"
     expect(subject.hostname). to eq "http://data.ncsasports.org"
   end
 
-  it 'can override the default sign_with' do
+  it "can override the default sign_with" do
     subject.sign_with = :sha512
     expect(subject.sign_with).to eq :sha512
   end
 
-  it 'can override the default token' do
+  it "can override the default token" do
     subject.token = "a_valid_json_web_token"
     expect(subject.token).to eq "a_valid_json_web_token"
   end
 
-  it 'can override default auth_id and secret_key' do
+  it "can override default auth_id and secret_key" do
     subject.auth_id = "hello"
     subject.secret_key = "secret"
     expect(subject.auth_id).to eq "hello"
     expect(subject.secret_key).to eq "secret"
   end
 
-  it 'takes an optional init hash to set all values' do
-    ENV['PASS_CLIENT_ENV'] = "something"
+  it "takes an optional init hash to set all values" do
+    ENV["PASS_CLIENT_ENV"] = "something"
     subject.timeout = "hello"
     subject.hostname = "secret"
     subject.port = 2222
@@ -54,7 +55,7 @@ RSpec.describe PassClient::Configuration do
     expect(subject.port).to eq 2222
   end
 
-  it 'can set attributes' do
+  it "can set attributes" do
     subject.secret_key = "a new key"
     expect(subject.secret_key).to eq "a new key"
   end

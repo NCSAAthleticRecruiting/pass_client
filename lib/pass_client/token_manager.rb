@@ -1,4 +1,5 @@
-require 'pass_client/representers/token'
+# frozen_string_literal: true
+require "pass_client/representers/token"
 
 module PassClient
   class TokenManager
@@ -20,7 +21,7 @@ module PassClient
     private
 
     def connect
-      connection.post(url: "/api/partner_athlete_search/v1/issue_token/", body: {auth_id: config.auth_id}.to_json)
+      connection.post(url: "/api/partner_athlete_search/v1/issue_token/", body: { auth_id: config.auth_id }.to_json)
     end
 
     def set_token(body)
@@ -40,8 +41,9 @@ module PassClient
       ::PassClient.configuration
     end
 
-    def error_handler(response, method=nil)
-      raise AuthorizationError, "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}"
+    def error_handler(response, method = nil)
+      raise AuthorizationError,
+        "Response code invalid #{response.status}: method: #{method}\nResponse body: #{response.body}"
     end
   end
 end

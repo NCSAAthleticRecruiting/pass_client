@@ -1,5 +1,6 @@
-require 'faraday'
-require 'ey-hmac/faraday'
+# frozen_string_literal: true
+require "faraday"
+require "ey-hmac/faraday"
 
 module PassClient
   ConnectionError = Class.new(StandardError)
@@ -12,10 +13,12 @@ module PassClient
 
     def self.instance
       if ::PassClient.configuration.auth_id == "CHANGE_ME" || PassClient.configuration.secret_key == "CHANGE_ME"
-        raise ConnectionError, "You are using default values for the auth_id or secret_key.\nThese values are unlikely to allow you to authenticate properly.\nSee README.md for instructions on configuring the gem."
+        raise ConnectionError, "You are using default values for the auth_id or secret_key.\n" \
+          "These values are unlikely to allow you to authenticate properly.\nSee README.md " \
+          "for instructions on configuring the gem."
       end
       if @test_instance.nil?
-        self.new(PassClient::Env.env)
+        new(PassClient::Env.env)
       else
         @test_instance
       end
@@ -23,7 +26,7 @@ module PassClient
 
     def self.unsigned_instance
       if @test_instance.nil?
-        self.new(PassClient::Env.env, signed: false)
+        new(PassClient::Env.env, signed: false)
       else
         @test_instance
       end
@@ -42,9 +45,9 @@ module PassClient
 
       @hostname = config.hostname
       @timeout  = config.timeout
-      @open_timeout  = config.open_timeout
-      @auth_id  = config.auth_id
-      @secret_key  = config.secret_key
+      @open_timeout = config.open_timeout
+      @auth_id = config.auth_id
+      @secret_key = config.secret_key
       @port = config.port
       @sign_with = config.sign_with
       @signed = signed
@@ -59,7 +62,7 @@ module PassClient
     end
 
     def connection
-      @connection ||= Faraday.new(base_uri, ssl: {verify: false}) do |c|
+      @connection ||= Faraday.new(base_uri, ssl: { verify: false }) do |c|
         c.response :logger unless @silent
         if signed
           c.use :hmac, auth_id, secret_key, sign_with: sign_with
@@ -80,9 +83,9 @@ module PassClient
         unwrapped_repsonse = connection.send(verb, url, params, headers) do |r|
           r.options.timeout = timeout
           r.options.open_timeout = open_timeout
-          r.headers['Content-Type'] = 'application/json'
+          r.headers["Content-Type"] = "application/json"
 
-          block.call(r) if block
+          block&.call(r)
         end
 
         Response.new unwrapped_repsonse
@@ -94,9 +97,9 @@ module PassClient
         unwrapped_response = connection.send(verb, url, body, headers) do |r|
           r.options.timeout = timeout
           r.options.open_timeout = open_timeout
-          r.headers['Content-Type'] = 'application/json'
+          r.headers["Content-Type"] = "application/json"
 
-          block.call(r) if block
+          block&.call(r)
         end
 
         Response.new unwrapped_response
