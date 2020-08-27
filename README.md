@@ -24,6 +24,23 @@ Or install it yourself as:
 
 Create, update, and delete methods are available from the AthleteCreator, AthleteUpdater, and AthleteDeleter classes, respectively. Each class has a corresponding (!) bang method, e.g. create!, etc. The AthleteGetter class has :get available, without a (!).
 
+### Search
+
+You can search via GET or POST requests, depending on the size of your search terms.  The list of available search terms can be found [here](https://github.com/NCSAAthleticRecruiting/activity_umbrella/blob/master/apps/partner_athlete_search/Elasticsearch.md)
+
+ex:
+
+```ruby
+search_terms = { sport_id: 101 }
+
+get_client = PassClient::Athlete::Search(search_terms: search_terms)
+response = client.get
+
+post_client = PassClient::Athlete::PostSearch(search_terms: search_terms)
+response = post_client.post
+```
+
+
 ## Configuration
 
 This gem must be configured with your auth_id and secret_key to work properly. Create an initializer in your rails project and set the appropriate values on the PassClient. The gem will raise a ConnectionError if you attempt to connect to a signed resource without setting auth_id or secret_key.
