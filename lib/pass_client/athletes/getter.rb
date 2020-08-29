@@ -1,4 +1,5 @@
-require 'pass_client/athletes/shared'
+# frozen_string_literal: true
+require "pass_client/athletes/shared"
 
 module PassClient
   module Athlete
@@ -15,20 +16,24 @@ module PassClient
         execute
       end
 
-      def self.schema
-        response = connection.get(url: "/api/partner_athlete_search/v1/athlete_schema")
-        if response.status.between?(200, 299)
-          response
-        else
-          error_handler(response, __method__)
+      class << self
+        def schema
+          response = connection.get(url: "/api/partner_athlete_search/v1/athlete_schema")
+          if response.status.between?(200, 299)
+            response
+          else
+            error_handler(response, __method__)
+          end
+        end
+
+        private
+
+        def connection
+          ::PassClient::Connection.unsigned_instance
         end
       end
 
       private
-
-      def self.connection
-        ::PassClient::Connection.unsigned_instance
-      end
 
       def connect
         connection.get(url: "/api/partner_athlete_search/v1/athlete/#{id}", headers: auth_header)

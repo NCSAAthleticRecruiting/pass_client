@@ -1,4 +1,5 @@
-require 'pass_client/env'
+# frozen_string_literal: true
+require "pass_client/env"
 
 module PassClient
   class Configuration
@@ -13,13 +14,13 @@ module PassClient
       @token = ""
       @silent = true
 
-      case PassClient::Env.env
-      when :staging
-        @hostname = "http://data-staging.ncsasports.org"
-      when :production
-        @hostname = "http://data.ncsasports.org"
-      else
-        @hostname = "http://localhost"
+      @hostname = case PassClient::Env.env
+                  when :staging
+                    "http://data-staging.ncsasports.org"
+                  when :production
+                    "http://data.ncsasports.org"
+                  else
+                    "http://localhost"
       end
     end
   end

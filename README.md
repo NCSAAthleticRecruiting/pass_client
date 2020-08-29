@@ -51,6 +51,13 @@ PassClient.configure do |config|
   config.secret_key = "test_secret_key"
 end
 ```
+## Development
+### Ruby Style Guide
+Ruby Style guides for NCSA is defined at https://ncsasports.atlassian.net/wiki/spaces/DEV/pages/704053308/Ruby+Style+Guide
+
+ncsa-vulcan is a ruby gem to enforce our style guide. After changes are made, verify styles by using `vulcan`.  The build will run the code base via `vulcan -a` and will not pass until all files are compliant.
+
+It's recommended to enable Vulcan during the pre-commit phase. We must run: `git config core.hooksPath git_hooks`
 
 ## Gem Signing
 

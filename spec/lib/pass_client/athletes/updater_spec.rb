@@ -1,4 +1,5 @@
-require 'pass_client/athletes/updater'
+# frozen_string_literal: true
+require "pass_client/athletes/updater"
 
 RSpec.describe PassClient::Athlete::Updater do
   subject { described_class.new(id: id, body: update_body) }
@@ -6,7 +7,7 @@ RSpec.describe PassClient::Athlete::Updater do
   let(:token_manager_double) { instance_double(PassClient::TokenManager) }
   let(:connection_double) { instance_double(PassClient::Connection) }
   let(:id) { "123-abc-456" }
-  let(:update_body) { { email:"test@school.edu",sport_id:101} }
+  let(:update_body) { { email: "test@school.edu", sport_id: 101 } }
   let(:api_response) { Faraday::Response.new(status: 200, body: "") }
   let(:method) { :put }
   let(:token) { "atoken" }
@@ -23,17 +24,23 @@ RSpec.describe PassClient::Athlete::Updater do
       .and_return(api_response)
   end
 
-  it 'sends a request to the correct address' do
+  it "sends a request to the correct address" do
     expect(connection_double)
-      .to receive(method).with(url: "/api/partner_athlete_search/v1/athlete/#{id}", body: {athlete: update_body}.to_json, headers: anything )
+      .to receive(method)
+      .with(url: "/api/partner_athlete_search/v1/athlete/#{id}",
+        body: { athlete: update_body }.to_json, headers: anything)
 
     subject.update!
   end
 
-  it 'sets the auth_header and accept a hash for update_body' do
+  it "sets the auth_header and accept a hash for update_body" do
     subject = described_class.new(id: id, body: { email: "test@school.edu", sport_id: 101 })
     expect(connection_double)
-      .to receive(method).with(url: "/api/partner_athlete_search/v1/athlete/#{id}", body: {athlete: update_body}.to_json, headers: {authorization: token})
+      .to receive(method)
+      .with(url: "/api/partner_athlete_search/v1/athlete/#{id}", body: {
+        athlete: update_body,
+      }.to_json,
+        headers: { authorization: token })
 
     subject.update!
   end
@@ -41,12 +48,11 @@ RSpec.describe PassClient::Athlete::Updater do
   context "with api responses" do
     let(:api_response) { Faraday::Response.new(status: 200, body: response_body) }
     let(:response_body) do
-      {'data' =>
-        { 'id' => id, 'attributes' => "All Athlete Data", 'type' => "Athlete"}
-      }.to_json
+      { "data" =>
+        { "id" => id, "attributes" => "All Athlete Data", "type" => "Athlete" } }.to_json
     end
 
-    it 'returns the response object' do
+    it "returns the response object" do
       expect(connection_double)
         .to receive(method)
         .and_return(api_response)
@@ -56,7 +62,7 @@ RSpec.describe PassClient::Athlete::Updater do
       expect(response.body).to eq response_body
     end
 
-    it 'renew the jwt ONCE when the status == 401' do
+    it "renew the jwt ONCE when the status == 401" do
       ::PassClient.configuration.token = token
       api_response = Faraday::Response.new(status: 401, body: "Error")
       expect(connection_double)
@@ -65,16 +71,16 @@ RSpec.describe PassClient::Athlete::Updater do
         .exactly(2).times
 
       allow(subject).to receive(:token).and_return(token)
-      expect{ subject.update! }.to_not raise_error
+      expect { subject.update! }.to_not raise_error
     end
 
-    it 'raises no exceptions when the status == 404' do
+    it "raises no exceptions when the status == 404" do
       response_404 = Faraday::Response.new(status: 404, body: "Error")
       allow(connection_double)
         .to receive(method)
         .and_return(response_404)
 
-      expect{ subject.update! }.to_not raise_error
+      expect { subject.update! }.to_not raise_error
       response = subject.update!
       expect(response.status).to eq 404
     end
