@@ -54,7 +54,7 @@ end
 
 ## Gem Signing
 
-The PassClient gem is cryptographically signed to prevent tampering. When installing the gem, you may need to specify the security level.
+The PassClient gem is not cryptographically signed, so when installing the gem, you may need to specify the security level.
 Use `gem install pass_client -P MediumSecurity` to allow both signed and unsigned gems to be used.
 
 See: http://guides.rubygems.org/security/ for more information about gem signing.
