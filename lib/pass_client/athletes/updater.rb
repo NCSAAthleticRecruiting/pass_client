@@ -1,4 +1,6 @@
-require 'pass_client/athletes/shared'
+# frozen_string_literal: true
+
+require "pass_client/athletes/shared"
 
 module PassClient
   module Athlete

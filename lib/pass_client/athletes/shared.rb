@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PassClient
   module Athlete
     RequestError = Class.new(StandardError)

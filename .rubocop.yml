@@ -1,0 +1,12 @@
+inherit_gem:
+  ncsa-vulcan:
+    - config/rubocop_base.yml
+    - config/rubocop_rails.yml
+
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  Exclude:
+    - bin/*
+    #- db/schema.rb
+    #- db/migrate/*.rb

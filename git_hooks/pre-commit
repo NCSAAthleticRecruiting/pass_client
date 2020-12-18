@@ -1,0 +1,32 @@
+#!/bin/sh
+
+exec 1>&2
+
+YML_FOR_VULCAN=".rubocop.yml"
+
+if [ -f "$YML_FOR_VULCAN" ]; then
+  RESULT_OUTPUT="$(bundle exec vulcan styles -v -a)"
+  MESSAGE=${RESULT_OUTPUT: -20}
+  echo "$RESULT_OUTPUT"
+
+  if [ "$MESSAGE" != "no offenses detected" ]; then
+    echo ""
+    echo "(╯°□°)╯︵ ┻━┻"
+    echo ""
+    echo "Vulcan found errors. Your commit is being cancelled. Correct the errors, add the changed files with Git, and commit again."
+    echo "You can attempt to fix them automatically with: $(tput bold)bundle exec vulcan styles -v -a -f$(tput sgr0)"
+    echo "See Vulcan usage for help: https://github.com/NCSAAthleticRecruiting/ncsa-vulcan#usage"
+    echo ""
+    echo "┻━┻︵ \(°□°)/ ︵ ┻━┻"
+    echo ""
+    exit 1
+  else
+    echo ""
+    echo "Hey, great job!"
+    echo ""
+    echo "(☞ﾟヮﾟ)☞   ☜(ﾟヮﾟ☜)"
+    echo ""
+  fi
+else
+  echo "NCSA Vulcan Is Not Setup ＼(｀0´)／"
+fi

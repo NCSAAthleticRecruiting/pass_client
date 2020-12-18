@@ -1,4 +1,6 @@
-require 'pass_client/athletes/getter'
+# frozen_string_literal: true
+
+require "pass_client/athletes/getter"
 
 RSpec.describe PassClient::Athlete::Getter do
   subject { described_class.new(id: id) }
@@ -22,14 +24,14 @@ RSpec.describe PassClient::Athlete::Getter do
       .and_return(api_response)
   end
 
-  it 'sends a request to the correct address' do
+  it "sends a request to the correct address" do
     expect(connection_double)
-      .to receive(method).with(url: "/api/partner_athlete_search/v1/athlete/#{id}", headers: {authorization: token})
+      .to receive(method).with(url: "/api/partner_athlete_search/v1/athlete/#{id}", headers: { authorization: token })
 
     subject.get
   end
 
-  it 'gets the athlete_schema' do
+  it "gets the athlete_schema" do
     expect(connection_double)
       .to receive(method).with(url: "/api/partner_athlete_search/v1/athlete_schema")
 
@@ -37,14 +39,13 @@ RSpec.describe PassClient::Athlete::Getter do
   end
 
   context "with api responses" do
-  let(:api_response) { Faraday::Response.new(status: 200, body: response_body) }
+    let(:api_response) { Faraday::Response.new(status: 200, body: response_body) }
     let(:response_body) do
-      {'data' =>
-        { 'id' => id, 'attributes' => "All Athlete Data", 'type' => "Athlete"}
-      }.to_json
+      { "data" =>
+        { "id" => id, "attributes" => "All Athlete Data", "type" => "Athlete" } }.to_json
     end
 
-    it 'renew the jwt ONCE when the status == 401' do
+    it "renew the jwt ONCE when the status == 401" do
       ::PassClient.configuration.token = token
       api_response = Faraday::Response.new(status: 401, body: "Error")
       expect(connection_double)
@@ -53,10 +54,10 @@ RSpec.describe PassClient::Athlete::Getter do
         .exactly(2).times
 
       allow(subject).to receive(:token).and_return(token)
-      expect{ subject.get }.to_not raise_error
+      expect { subject.get }.to_not raise_error
     end
 
-    it 'returns the response object' do
+    it "returns the response object" do
       expect(connection_double)
         .to receive(method)
         .and_return(api_response)
@@ -66,14 +67,14 @@ RSpec.describe PassClient::Athlete::Getter do
       expect(response.body).to eq response_body
     end
 
-    it 'raises no exceptions when the status == 404' do
+    it "raises no exceptions when the status == 404" do
       response_404 = Faraday::Response.new(status: 404, body: "Error")
       allow(connection_double)
         .to receive(method)
         .and_return(response_404)
       subject = described_class.new(id: id)
 
-      expect{ subject.get }.to_not raise_error
+      expect { subject.get }.to_not raise_error
       response = subject.get
       expect(response.status).to eq 404
     end
