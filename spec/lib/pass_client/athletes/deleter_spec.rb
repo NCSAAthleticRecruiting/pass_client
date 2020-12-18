@@ -1,4 +1,6 @@
-require 'pass_client/athletes/deleter'
+# frozen_string_literal: true
+
+require "pass_client/athletes/deleter"
 
 RSpec.describe PassClient::Athlete::Deleter do
   subject { described_class.new(id: id) }
@@ -22,14 +24,14 @@ RSpec.describe PassClient::Athlete::Deleter do
       .and_return(api_response)
   end
 
-  it 'sends a request to the correct address' do
+  it "sends a request to the correct address" do
     expect(connection_double)
-      .to receive(method).with(url: "/api/partner_athlete_search/v1/athlete/#{id}", headers: {authorization: token})
+      .to receive(method).with(url: "/api/partner_athlete_search/v1/athlete/#{id}", headers: { authorization: token })
 
     subject.delete!
   end
 
-  it 'renew the jwt ONCE when the status == 401' do
+  it "renew the jwt ONCE when the status == 401" do
     ::PassClient.configuration.token = token
     api_response = Faraday::Response.new(status: 401, body: "Error")
     expect(connection_double)
@@ -38,6 +40,6 @@ RSpec.describe PassClient::Athlete::Deleter do
       .exactly(2).times
 
     allow(subject).to receive(:token).and_return(token)
-    expect{ subject.delete! }.to_not raise_error
+    expect { subject.delete! }.to_not raise_error
   end
 end

@@ -1,7 +1,9 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
+# frozen_string_literal: true
+
+lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'pass_client/version'
+require "pass_client/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "pass_client"
@@ -9,19 +11,19 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Christian Koch"]
   spec.email         = ["ckoch@ncsasports.org"]
 
-  spec.summary       = %q{A gem to manage connections to the Partner Athlete Search Service (PASS)}
-  spec.description   = %q{A gem to manage connections to the Partner Athlete Search Service (PASS)}
+  spec.summary       = "A gem to manage connections to the Partner Athlete Search Service (PASS)"
+  spec.description   = "A gem to manage connections to the Partner Athlete Search Service (PASS)"
   spec.homepage      = "https://github.com/NCSAAthleticRecruiting/pass_client"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "gems.ncsasports.org"
+    spec.metadata["allowed_push_host"] = "gems.ncsasports.org"
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.files         = %x(git ls-files -z).split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
@@ -34,5 +36,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rack"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rack-test"
-  spec.add_development_dependency 'geminabox'
+  spec.add_development_dependency "geminabox"
+  spec.add_development_dependency "ncsa-vulcan"
 end

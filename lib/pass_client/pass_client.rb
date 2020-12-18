@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PassClient
   class << self
     attr_writer :configuration

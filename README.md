@@ -1,6 +1,6 @@
 # PassClient
 
-The PassClient gem handles connections with the Partner Athlete Search Service (PASS). Using the athlete_... classes, you can perform CRUD operations on athletes within the PASS.
+The PassClient gem handles connections with the Partner Athlete Search Service (PASS). Using the athlete\_... classes, you can perform CRUD operations on athletes within the PASS.
 
 The gem can be configured with an initializer in your Rails project. (See Configuration)
 
@@ -26,7 +26,7 @@ Create, update, and delete methods are available from the AthleteCreator, Athlet
 
 ### Search
 
-You can search via GET or POST requests, depending on the size of your search terms.  The list of available search terms can be found [here](https://github.com/NCSAAthleticRecruiting/activity_umbrella/blob/master/apps/partner_athlete_search/Elasticsearch.md)
+You can search via GET or POST requests, depending on the size of your search terms. The list of available search terms can be found [here](https://github.com/NCSAAthleticRecruiting/activity_umbrella/blob/master/apps/partner_athlete_search/Elasticsearch.md)
 
 ex:
 
@@ -39,7 +39,6 @@ response = client.get
 post_client = PassClient::Athlete::PostSearch(search_terms: search_terms)
 response = post_client.post
 ```
-
 
 ## Configuration
 
@@ -58,3 +57,11 @@ The PassClient gem is not cryptographically signed, so when installing the gem, 
 Use `gem install pass_client -P MediumSecurity` to allow both signed and unsigned gems to be used.
 
 See: http://guides.rubygems.org/security/ for more information about gem signing.
+
+### Ruby Style Guide
+
+Ruby Style guides for NCSA is defined at https://ncsasports.atlassian.net/wiki/spaces/DEV/pages/704053308/Ruby+Style+Guide
+
+ncsa-vulcan is a ruby gem to enforce our style guide. After changes are made, verify styles by using `vulcan`. The build will run the code base via `vulcan -a` and will not pass until all files are compliant.
+
+It's recommended to enable Vulcan during the pre-commit phase. We must run: `git config core.hooksPath git_hooks`

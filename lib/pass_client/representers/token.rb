@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PassClient
   module Representer
     class Token
@@ -17,24 +19,24 @@ module PassClient
       private
 
       def parse_body(json)
-        json.kind_of?(String) ? JSON.parse(json) : json
+        json.is_a?(String) ? JSON.parse(json) : json
       end
 
       def structify
-        if body.has_key?('data')
+        if body.key?("data")
           @status = :valid
           TokenRepresenter.new(
-            body['data']['id'],
-            body['data']['attributes'],
-            body['data']['type'],
-            body['data']['attributes']['token']
+            body["data"]["id"],
+            body["data"]["attributes"],
+            body["data"]["type"],
+            body["data"]["attributes"]["token"]
           )
-        elsif body.has_key?('errors')
+        elsif body.key?("errors")
           @status = :error
-          error = body['errors'].first
+          error = body["errors"].first
           ErrorRepresenter.new(
-            error['message'],
-            error['detail']
+            error["message"],
+            error["detail"]
           )
         else
           @status = :error

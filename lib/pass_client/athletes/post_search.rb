@@ -1,4 +1,6 @@
-require 'pass_client/athletes/shared'
+# frozen_string_literal: true
+
+require "pass_client/athletes/shared"
 
 module PassClient
   module Athlete
@@ -18,7 +20,11 @@ module PassClient
       private
 
       def connect
-        connection.post(url: "/api/partner_athlete_search/v1/search/athlete", body: search_terms.to_json, headers: auth_header)
+        connection.post(
+          url: "/api/partner_athlete_search/v1/search/athlete",
+          body: search_terms.to_json,
+          headers: auth_header
+        )
       end
     end
   end

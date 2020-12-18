@@ -1,4 +1,6 @@
-require 'pass_client/athletes/shared'
+# frozen_string_literal: true
+
+require "pass_client/athletes/shared"
 
 module PassClient
   module Athlete
@@ -26,12 +28,16 @@ module PassClient
 
       private
 
-      def self.connection
-        ::PassClient::Connection.unsigned_instance
-      end
-
       def connect
         connection.get(url: "/api/partner_athlete_search/v1/athlete/#{id}", headers: auth_header)
+      end
+
+      class << self
+        private
+
+        def connection
+          ::PassClient::Connection.unsigned_instance
+        end
       end
     end
   end
